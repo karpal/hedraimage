@@ -14,11 +14,8 @@ function randomInterval(minMs, maxMs) {
   return Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
 }
 
-function randomBatchSize(min = 1, max = 5) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 const GENRES = [
+  // ... daftar genre sama seperti sebelumnya ...
   "spy flying over haunted mansion cellar minimalist style",
   "fantasy forest with dragons",
   "cyberpunk city at night",
@@ -60,7 +57,7 @@ async function loadTokens() {
   return JSON.parse(data);
 }
 
-async function runBatches() {
+async function run() {
   const tokens = await loadTokens();
 
   if (!tokens.length) {
@@ -71,26 +68,22 @@ async function runBatches() {
   let tokenIndex = 0;
 
   while (true) {
-    const batchSize = randomBatchSize(1, 5);
-    const prompts = Array.from({ length: batchSize }, () => pickRandom(GENRES));
+    const prompt = pickRandom(GENRES);
+    const token = tokens[tokenIndex];
+    tokenIndex = (tokenIndex + 1) % tokens.length;
 
-    for (const prompt of prompts) {
-      const token = tokens[tokenIndex];
-      tokenIndex = (tokenIndex + 1) % tokens.length;
-
-      try {
-        console.log(chalk.blue(`Generating prompt: "${prompt}"`));
-        await generateImage(token, prompt);
-        console.log(chalk.green(`✓ Success: "${prompt}"`));
-      } catch (err) {
-        console.error(chalk.red(`✗ Error saat generateImage: ${err.message}`));
-      }
+    try {
+      console.log(chalk.blue(`Generating prompt: "${prompt}"`));
+      await generateImage(token, prompt);
+      console.log(chalk.green(`✓ Success: "${prompt}"`));
+    } catch (err) {
+      console.error(chalk.red(`✗ Error saat generateImage: ${err.message}`));
     }
 
     const waitTime = randomInterval(10000, 30000);
-    console.log(chalk.cyan(`Batch selesai: ${batchSize} gambar dibuat. Menunggu ${waitTime / 1000}s sebelum batch berikutnya...\n`));
+    console.log(chalk.cyan(`Gambar selesai dibuat. Menunggu ${waitTime / 1000}s sebelum generate berikutnya...\n`));
     await sleep(waitTime);
   }
 }
 
-runBatches().catch(console.error);
+run().catch(console.error);
