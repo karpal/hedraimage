@@ -2,14 +2,20 @@ import fs from 'fs/promises';
 import chalk from 'chalk';
 import generateImage from './generateImage.js';
 
-// Utility delay
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Ambil item acak dari array
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomInterval(minMs, maxMs) {
+  return Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+}
+
+function randomBatchSize(min = 1, max = 5) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 const GENRES = [
@@ -54,7 +60,7 @@ async function loadTokens() {
   return JSON.parse(data);
 }
 
-async function runBatches(batchSize = 1, intervalMs = 60000) {
+async function runBatches() {
   const tokens = await loadTokens();
 
   if (!tokens.length) {
@@ -65,6 +71,7 @@ async function runBatches(batchSize = 1, intervalMs = 60000) {
   let tokenIndex = 0;
 
   while (true) {
+    const batchSize = randomBatchSize(1, 5);
     const prompts = Array.from({ length: batchSize }, () => pickRandom(GENRES));
 
     for (const prompt of prompts) {
@@ -86,8 +93,4 @@ async function runBatches(batchSize = 1, intervalMs = 60000) {
   }
 }
 
-const [, , argBatchSize, argInterval] = process.argv;
-const batchSize = (Number(argBatchSize) > 0) ? Number(argBatchSize) : 1;
-const intervalMs = (Number(argInterval) > 0) ? Number(argInterval) : 30000;
-
-runBatches(batchSize, intervalMs).catch(console.error);
+runBatches().catch(console.error);
