@@ -1,4 +1,3 @@
-// generateImage.js  (ES-module)
 export default async function generateImage(token, prompt) {
   const url = 'https://api.hedra.com/web-app/generations';
 
