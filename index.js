@@ -80,8 +80,9 @@ async function runBatches(batchSize = 1, intervalMs = 60000) {
       }
     }
 
-    console.log(chalk.yellow(`Batch selesai: ${batchSize} gambar dibuat. Menunggu ${intervalMs / 1000}s...\n`));
-    await sleep(intervalMs);
+    const waitTime = randomInterval(10000, 30000);
+    console.log(chalk.cyan(`Batch selesai: ${batchSize} gambar dibuat. Menunggu ${waitTime / 1000}s sebelum batch berikutnya...\n`));
+    await sleep(waitTime);
   }
 }
 
