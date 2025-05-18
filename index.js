@@ -1,17 +1,17 @@
 import fs from 'fs/promises';
+import chalk from 'chalk';
 import generateImage from './generateImage.js';
 
-// Utility untuk delay
+// Utility delay
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Utility untuk ambil elemen acak dari array
+// Ambil item acak dari array
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Daftar genre / prompt
 const GENRES = [
   "spy flying over haunted mansion cellar minimalist style",
   "fantasy forest with dragons",
@@ -49,25 +49,22 @@ const GENRES = [
   "Matcha latte with 3-D foam art dragon, cozy café scene"
 ];
 
-// Fungsi untuk load token dari file
 async function loadTokens() {
   const data = await fs.readFile('./tokens.json', 'utf-8');
   return JSON.parse(data);
 }
 
-// Fungsi utama menjalankan loop pembuatan gambar
 async function runBatches(batchSize = 1, intervalMs = 60000) {
   const tokens = await loadTokens();
 
   if (!tokens.length) {
-    console.error('Error: tokens.json kosong atau tidak valid.');
+    console.error(chalk.red('Error: tokens.json kosong atau tidak valid.'));
     process.exit(1);
   }
 
   let tokenIndex = 0;
 
   while (true) {
-    // Ambil batchSize prompt acak
     const prompts = Array.from({ length: batchSize }, () => pickRandom(GENRES));
 
     for (const prompt of prompts) {
@@ -75,22 +72,21 @@ async function runBatches(batchSize = 1, intervalMs = 60000) {
       tokenIndex = (tokenIndex + 1) % tokens.length;
 
       try {
-        console.log(`Generating gambar: "${prompt}"`);
+        console.log(chalk.blue(`Generating prompt: "${prompt}"`));
         await generateImage(token, prompt);
+        console.log(chalk.green(`✓ Success: "${prompt}"`));
       } catch (err) {
-        console.error('Error saat generateImage:', err);
+        console.error(chalk.red(`✗ Error saat generateImage: ${err.message}`));
       }
     }
 
-    console.log(`Genre selesai: ${batchSize} gambar dibuat. Menunggu ${intervalMs / 1000}s...\n`);
+    console.log(chalk.yellow(`Batch selesai: ${batchSize} gambar dibuat. Menunggu ${intervalMs / 1000}s...\n`));
     await sleep(intervalMs);
   }
 }
 
-// Baca argumen CLI: jumlah gambar & interval ms
 const [, , argBatchSize, argInterval] = process.argv;
 const batchSize = (Number(argBatchSize) > 0) ? Number(argBatchSize) : 1;
-const intervalMs = (Number(argInterval) > 0) ? Number(argInterval) : 30000;
+const intervalMs = (Number(argInterval) > 0) ? Number(argInterval) : 60000;
 
-// Jalankan
 runBatches(batchSize, intervalMs).catch(console.error);
