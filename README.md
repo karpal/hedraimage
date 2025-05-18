@@ -11,7 +11,7 @@ npm chalk
 ```
 masukkan token
 ```bash
-tokens.json
+nano tokens.json
 ```
 untuk satu akun saja hapus bagian 
 "Bearer token_akun_2",
