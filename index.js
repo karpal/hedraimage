@@ -97,7 +97,7 @@ async function run(loopCount) {
       console.log(chalk.green(`✓ Success: "${prompt}"`));
     } catch (err) {
       console.error(chalk.red(`✗ Error saat generateImage: ${err.message}`));
-      console.log(chalk.yellow(`Token …${token.slice(-6)} token dah habis bang.`));
+      console.log(chalk.yellow(`Token dah habis bang.`));
       failedTokens.add(token);
       tokens = tokens.filter(t => !failedTokens.has(t));
 
