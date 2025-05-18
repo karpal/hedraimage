@@ -7,7 +7,7 @@ cd hedraimage
 ```
 ```bash
 npm init -y
-npm chalk
+npm install chalk
 ```
 masukkan token
 ```bash
