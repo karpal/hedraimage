@@ -72,7 +72,7 @@ function askQuestion(query) {
 }
 
 async function run(loopCount) {
-  const tokens = await loadTokens();
+  let tokens = await loadTokens();
 
   if (!tokens.length) {
     console.error(chalk.red('Error: tokens.json kosong atau tidak valid.'));
@@ -80,11 +80,16 @@ async function run(loopCount) {
   }
 
   let tokenIndex = 0;
+  let failedTokens = new Set();
 
   for (let i = 0; i < loopCount; i++) {
+    if (tokens.length === 0) {
+      console.error(chalk.red('Semua token habis atau gagal, berhenti generate.'));
+      process.exit(1);
+    }
+
     const prompt = pickRandom(GENRES);
-    const token = tokens[tokenIndex];
-    tokenIndex = (tokenIndex + 1) % tokens.length;
+    let token = tokens[tokenIndex];
 
     try {
       console.log(chalk.blue(`Generating prompt (${i + 1}/${loopCount}): "${prompt}"`));
@@ -92,7 +97,21 @@ async function run(loopCount) {
       console.log(chalk.green(`✓ Success: "${prompt}"`));
     } catch (err) {
       console.error(chalk.red(`✗ Error saat generateImage: ${err.message}`));
+      console.log(chalk.yellow(`Token …${token.slice(-6)} dianggap bermasalah dan dihapus.`));
+      failedTokens.add(token);
+      tokens = tokens.filter(t => !failedTokens.has(t));
+
+      if (tokens.length === 0) {
+        console.error(chalk.red('Semua token habis atau gagal, berhenti generate.'));
+        process.exit(1);
+      }
+      tokenIndex = tokenIndex % tokens.length;
+      i--;
+      await sleep(5000);
+      continue;
     }
+
+    tokenIndex = (tokenIndex + 1) % tokens.length;
 
     if (i < loopCount - 1) {
       const waitTime = randomInterval(10000, 30000);
