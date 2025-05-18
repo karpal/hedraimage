@@ -87,6 +87,6 @@ async function runBatches(batchSize = 1, intervalMs = 60000) {
 
 const [, , argBatchSize, argInterval] = process.argv;
 const batchSize = (Number(argBatchSize) > 0) ? Number(argBatchSize) : 1;
-const intervalMs = (Number(argInterval) > 0) ? Number(argInterval) : 60000;
+const intervalMs = (Number(argInterval) > 0) ? Number(argInterval) : 30000;
 
 runBatches(batchSize, intervalMs).catch(console.error);
