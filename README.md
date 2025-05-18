@@ -17,6 +17,7 @@ untuk satu akun saja hapus bagian
 "Bearer token_akun_2",
 "Bearer token_akun_3"
 dan tanda koma (,) dibelakang "Bearer token_akun_1", dihapus
+
 CTRL+X y enter
 
 Jalankan
