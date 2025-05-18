@@ -75,14 +75,14 @@ async function runBatches(batchSize = 1, intervalMs = 60000) {
       tokenIndex = (tokenIndex + 1) % tokens.length;
 
       try {
-        console.log(`Generating with token ${token.slice(0,5)}... prompt: "${prompt}"`);
+        console.log(`Generating gambar: "${prompt}"`);
         await generateImage(token, prompt);
       } catch (err) {
         console.error('Error saat generateImage:', err);
       }
     }
 
-    console.log(`Batch selesai: ${batchSize} gambar dibuat. Menunggu ${intervalMs / 1000}s...\n`);
+    console.log(`Genre selesai: ${batchSize} gambar dibuat. Menunggu ${intervalMs / 1000}s...\n`);
     await sleep(intervalMs);
   }
 }
