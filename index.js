@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import chalk from 'chalk';
+import readline from 'readline';
 import generateImage from './generateImage.js';
 
 function sleep(ms) {
@@ -15,7 +16,6 @@ function randomInterval(minMs, maxMs) {
 }
 
 const GENRES = [
-  // ... daftar genre sama seperti sebelumnya ...
   "spy flying over haunted mansion cellar minimalist style",
   "fantasy forest with dragons",
   "cyberpunk city at night",
@@ -57,7 +57,21 @@ async function loadTokens() {
   return JSON.parse(data);
 }
 
-async function run() {
+function askQuestion(query) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise(resolve => {
+    rl.question(query, answer => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
+
+async function run(loopCount) {
   const tokens = await loadTokens();
 
   if (!tokens.length) {
@@ -67,23 +81,37 @@ async function run() {
 
   let tokenIndex = 0;
 
-  while (true) {
+  for (let i = 0; i < loopCount; i++) {
     const prompt = pickRandom(GENRES);
     const token = tokens[tokenIndex];
     tokenIndex = (tokenIndex + 1) % tokens.length;
 
     try {
-      console.log(chalk.blue(`Generating prompt: "${prompt}"`));
+      console.log(chalk.blue(`Generating prompt (${i + 1}/${loopCount}): "${prompt}"`));
       await generateImage(token, prompt);
       console.log(chalk.green(`✓ Success: "${prompt}"`));
     } catch (err) {
       console.error(chalk.red(`✗ Error saat generateImage: ${err.message}`));
     }
 
-    const waitTime = randomInterval(10000, 30000);
-    console.log(chalk.cyan(`Gambar selesai dibuat. Menunggu ${waitTime / 1000}s sebelum generate berikutnya...\n`));
-    await sleep(waitTime);
+    if (i < loopCount - 1) {
+      const waitTime = randomInterval(10000, 30000);
+      console.log(chalk.cyan(`Gambar selesai dibuat. Menunggu ${waitTime / 1000}s sebelum generate berikutnya...\n`));
+      await sleep(waitTime);
+    }
   }
 }
 
-run().catch(console.error);
+async function main() {
+  const input = await askQuestion('Masukkan jumlah gambar yang ingin dibuat: ');
+  const loopCount = parseInt(input, 10);
+
+  if (isNaN(loopCount) || loopCount <= 0) {
+    console.log(chalk.red('Input tidak valid, menggunakan default 5 gambar.'));
+    await run(5);
+  } else {
+    await run(loopCount);
+  }
+}
+
+main().catch(console.error);
