@@ -97,12 +97,12 @@ async function run(loopCount) {
       console.log(chalk.green(`✓ Success: "${prompt}"`));
     } catch (err) {
       console.error(chalk.red(`✗ Error saat generateImage: ${err.message}`));
-      console.log(chalk.yellow(`Token …${token.slice(-6)} dianggap bermasalah dan dihapus.`));
+      console.log(chalk.yellow(`Token …${token.slice(-6)} token dah habis bang.`));
       failedTokens.add(token);
       tokens = tokens.filter(t => !failedTokens.has(t));
 
       if (tokens.length === 0) {
-        console.error(chalk.red('Semua token habis atau gagal, berhenti generate.'));
+        console.error(chalk.red('Semua token habis, berhenti generate.'));
         process.exit(1);
       }
       tokenIndex = tokenIndex % tokens.length;
