@@ -16,11 +16,11 @@ async function main() {
 
   // Keyword/genre input dari user (bisa ganti ini dengan argumen CLI atau input lain)
   const genres = [
-    "spy flying over haunted mansion cellar minimalist style",
-    "fantasy forest with dragons",
-    "cyberpunk city at night",
-    "space exploration futuristic art"
-    // ✨ Steampunk & Viktorian
+"spy flying over haunted mansion cellar minimalist style",
+"fantasy forest with dragons",
+"cyberpunk city at night",
+"space exploration futuristic art",
+// ✨ Steampunk & Viktorian
 "Steam-powered airship above foggy London, sepia photograph",
 "Clockwork owl perched on brass gear tower, intricate steampunk illustration",
 "Victorian detective in neon steampunk goggles, dramatic chiaroscuro",
