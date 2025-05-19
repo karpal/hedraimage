@@ -13,10 +13,12 @@ masukkan token
 ```bash
 nano tokens.json
 ```
-untuk satu akun saja hapus bagian 
+untuk tambahkan banyak akun sisa tambahkan
 "Bearer token_akun_2",
-"Bearer token_akun_3"
-dan tanda koma (,) dibelakang "Bearer token_akun_1", dihapus
+"Bearer token_akun_3",
+"dst....."
+dibawah "Bearer token_akun_1" dan tambahkan koma ( , ) dibelakangnya
+dan akun terakhir jangan ditambahkan koma ( , )
 
 CTRL+X y enter
 
